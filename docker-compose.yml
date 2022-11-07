@@ -1,0 +1,66 @@
+version: "3"
+services:
+  flow:
+    build:
+      dockerfile: Dockerfile
+      context: ./flow
+    container_name: flow
+    ports:
+      - "8000:8000"
+    restart: always
+    depends_on:
+      - "db"
+    volumes:
+      - .:/codetain
+      - /codetain/flow/node_modules
+
+    # env_file:
+    #   - ./flow/.env.dev
+
+  cars_data:
+    build:
+      dockerfile: Dockerfile
+      context: ./cars_data
+    container_name: cars_data
+    ports:
+      - "7000:7000"
+    restart: always
+    depends_on:
+      - "db"
+    volumes:
+      - .:/codetain
+      - /codetain/cars_data/node_modules
+
+    # env_file:
+    #   - ./cars_data/.env.dev
+
+  avg_charging_power:
+    build:
+      dockerfile: Dockerfile
+      context: ./avg_charging_power
+    container_name: avg_charging_power
+    ports:
+      - "6001:6001"
+    restart: always
+    depends_on:
+      - "db"
+    volumes:
+      - .:/codetain
+      - /codetain/avg_charging_power/node_modules
+
+    # env_file:
+    #   - ./avg_charging_power/.env.dev
+
+  db:
+    image: mysql
+    ports:
+      - "33061:3306"
+    command: --init-file /data/application/init.sql
+    volumes:
+      - ./init.sql:/data/application/init.sql
+    environment:
+      - MYSQL_ROOT_USER=root
+      - MYSQL_ROOT_PASSWORD = qwerty!23
+      - MYSQL_DATABASE=codetain_cars_ks
+      - MYSQL_USER=user1
+      - MYSQL_PASSWORD=qwerty!23
